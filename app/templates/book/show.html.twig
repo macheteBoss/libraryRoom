@@ -33,7 +33,11 @@
             </tr>
             <tr>
                 <th>Image</th>
-                <td>{{ book.image }}</td>
+                <td>
+                    {% if book.image %}
+                        <div class = "image" style = "background-image: url('{{ asset('uploads/images/' ~ book.image) }}')"></div>
+                    {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>

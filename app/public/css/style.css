@@ -7,3 +7,12 @@
 .form-group {
     margin-bottom: 20px;
 }
+
+.image {
+    width: 150px!important;
+    height: 150px;
+    background-position: center center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-bottom: 15px;
+}

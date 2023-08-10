@@ -6,6 +6,10 @@
 {% block body %}
     <h1>Edit Book</h1>
 
+    {% if book.image %}
+        <div class = "image" style = "background-image: url('{{ asset('uploads/images/' ~ book.image) }}')"></div>
+    {% endif %}
+
     {{ include('book/_form.html.twig', {'button_label': 'Update'}) }}
 
     {{ include('book/_delete_form.html.twig') }}
