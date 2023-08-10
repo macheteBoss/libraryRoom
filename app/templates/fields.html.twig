@@ -10,3 +10,15 @@
         {{ form_widget(form) }}
     </div>
 {% endblock form_row %}
+
+{% block checkbox_row %}
+    <div class="form-check">
+        {{ form_widget(form) }}
+        {{ form_label(form, null, {'label_attr' : {'class' : 'form-check-label'}}) }}
+        {% if form_errors(form) %}
+            <div class="form-errors alert alert-danger">
+                {{ form_errors(form) }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

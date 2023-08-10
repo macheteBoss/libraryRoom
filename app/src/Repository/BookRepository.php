@@ -68,6 +68,64 @@ class BookRepository extends ServiceEntityRepository
         return $authorIds;
     }
 
+    public function findBySearchData($filterData) {
+        $conn = $this->_em->getConnection();
+
+        $data = $filterData;
+
+        $sql = 'SELECT b.id FROM book b';
+        $where = '';
+
+        if (array_key_exists('authors', $filterData) !== false) {
+            $sql .= ' 
+                INNER JOIN book_author ba ON b.id = ba.book_id 
+                INNER JOIN author a ON a.id = ba.author_id
+            ';
+            $where = ' author_id IN (' . implode(',', $filterData['authors']) . ')';
+
+            unset($data['authors']);
+        }
+
+        if (array_key_exists('image', $filterData)) {
+            if ($where) {
+                $where .= ' AND b.image != ""';
+            } else {
+                $where = 'b.image != ""';
+            }
+
+            unset($data['image']);
+        }
+
+        $list = [];
+        foreach ($data as $key => $item) {
+            $list[] = 'b.' . $key . ' LIKE "%' . $item . '%"';
+        }
+
+        if (!empty($list)) {
+            if ($where) {
+                $where .= ' AND ';
+            }
+            $where .= implode(' AND ', $list);
+        }
+
+        if ($where) {
+            $sql .= ' WHERE ' . $where;
+        }
+
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+        $ids = $resultSet->fetchAllAssociative();
+
+        $data = [];
+        if (!empty($ids)) {
+            foreach ($ids as $id) {
+                $data[] = $id['id'];
+            }
+        }
+
+        return $data;
+    }
+
     // /**
     //  * @return Book[] Returns an array of Book objects
     //  */

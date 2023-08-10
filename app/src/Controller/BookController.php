@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Form\BookFilterType;
 use App\Form\BookType;
 use App\Repository\BookRepository;
 use App\Service\FileUploader;
@@ -19,10 +20,35 @@ class BookController extends AbstractController
     /**
      * @Route("/", name="app_book_index", methods={"GET"})
      */
-    public function index(BookRepository $bookRepository): Response
+    public function index(BookRepository $bookRepository, Request $request): Response
     {
+        $form = $this->createForm(BookFilterType::class, null, [
+            'method' => 'GET'
+        ]);
+        $form->handleRequest($request);
+
+        $repository = $this->getDoctrine()
+            ->getRepository(Book::class);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $filterData = $this->getFormDataArray($form);
+            $ids = $repository->findBySearchData($filterData);
+
+            if (!empty($filterData)) {
+                $books = (!empty($ids)) ? $bookRepository->findBy(['id' => $ids]) : [];
+            } else {
+                $books = $bookRepository->findAll();
+            }
+
+            return $this->render('book/index.html.twig', [
+                'books' => $books,
+                'form' => $form->createView(),
+            ]);
+        }
+
         return $this->render('book/index.html.twig', [
             'books' => $bookRepository->findAll(),
+            'form' => $form->createView(),
         ]);
     }
 
@@ -102,5 +128,33 @@ class BookController extends AbstractController
         }
 
         return $this->redirectToRoute('app_book_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * Метод для вывода из формы массива полей и их значений.
+     * Метод немного не корректен, т.к. можно было придумать рекурсию, но при моей реализации с ManyToMany свойствами не было возможным это придумать
+     */
+    private function getFormDataArray($form)
+    {
+        $data = [];
+        foreach ( $form as $key => $value) {
+            if (is_object($value->getData())) {
+                $buf = [];
+                $object = $value->getData();
+                foreach ($object as $item) {
+                    $buf[] = $item->getId();
+                }
+
+                if (!empty($buf)) {
+                    $data[$key] = $buf;
+                }
+            } else {
+                if ($value->getData()) {
+                    $data[$key] = $value->getData();
+                }
+            }
+        }
+
+        return $data;
     }
 }

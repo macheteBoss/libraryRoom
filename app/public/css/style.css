@@ -16,3 +16,19 @@
     background-repeat: no-repeat;
     margin-bottom: 15px;
 }
+
+.filter {
+    padding: 20px;
+    border: 1px dotted;
+    margin: 20px 0;
+}
+
+.filter .form-check {
+    padding-left: 0;
+    margin-bottom: 15px;
+}
+
+.filter .form-check input {
+    position: relative;
+    top: 1px;
+}

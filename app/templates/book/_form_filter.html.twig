@@ -1,0 +1,9 @@
+<div class="filter">
+    <h2>Задайте фильтры</h2>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">Search</button>
+    <a class="btn" href = "{{ path('app_book_index') }}">Reset</a>
+    {{ form_end(form) }}
+</div>

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% form_theme form 'fields.html.twig' %}
 
 {% block title %}Book index{% endblock %}
 
@@ -6,6 +7,8 @@
     <h1>Books</h1>
 
     <a href="{{ path('app_author_index') }}" class="btn">Authors -></a>
+
+    {{ include('book/_form_filter.html.twig') }}
 
     <table class="table align-middle">
         <thead>
