@@ -1,0 +1,12 @@
+{% block form_row %}
+    <div class="form-group">
+        {{ form_label(form) }}
+        <br>
+        {% if form_errors(form) %}
+            <div class="form-errors alert alert-danger">
+                {{ form_errors(form) }}
+            </div>
+        {% endif %}
+        {{ form_widget(form) }}
+    </div>
+{% endblock form_row %}

@@ -3,9 +3,11 @@
 {% block title %}Book index{% endblock %}
 
 {% block body %}
-    <h1>Book index</h1>
+    <h1>Books</h1>
 
-    <table class="table">
+    <a href="{{ path('app_author_index') }}" class="btn">Authors -></a>
+
+    <table class="table align-middle">
         <thead>
             <tr>
                 <th>Id</th>

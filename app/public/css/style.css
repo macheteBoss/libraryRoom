@@ -1,0 +1,9 @@
+.btn {
+    display: block;
+    border: 1px solid!important;
+    margin: 5px 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
