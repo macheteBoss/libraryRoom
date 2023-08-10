@@ -10,6 +10,8 @@
 
 # docker-compose up --build -d
 
+# chmod -R 777 app/public
+
 Заходим в контейнер:
 # docker exec -it library1-php-cli bash
 
