@@ -27,7 +27,7 @@ class AppFixtures extends Fixture
             $book = new Book();
             $book->setTitle('Book' . $i);
             $book->setYear(rand(1000, 2023));
-            for ($g = $i; $g < 5; $g++) {
+            for ($g = $i; $g <= 5; $g++) {
                 $book->addAuthor(
                     $authorRepository->findOneBy(['name' => 'Author' . $g])
                 );
