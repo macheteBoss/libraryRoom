@@ -47,6 +47,27 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
+    public function getAuthorIdsByBookId($bookId) {
+        $conn = $this->_em->getConnection();
+
+        $authorIds = [];
+
+        $sql = '
+            SELECT * FROM book_author
+            WHERE book_id = ?
+            ';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery([$bookId]);
+        $data = $resultSet->fetchAllAssociative();
+
+        $authorIds = [];
+        foreach ($data as $item) {
+            $authorIds[] = $item['author_id'];
+        }
+
+        return $authorIds;
+    }
+
     // /**
     //  * @return Book[] Returns an array of Book objects
     //  */
