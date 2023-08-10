@@ -12,50 +12,56 @@ class BookChangedListener
 {
     public function postPersist(Book $book, PostPersistEventArgs $event)
     {
-        $eventManager = $event->getObjectManager();
+        if ('cli' != php_sapi_name()) {
+            $eventManager = $event->getObjectManager();
 
-        foreach ($book->getAuthors() as $author) {
-            $author->setCountBooks($author->getCountBooks() + 1);
+            foreach ($book->getAuthors() as $author) {
+                $author->setCountBooks($author->getCountBooks() + 1);
+            }
+
+            $eventManager->flush();
         }
-
-        $eventManager->flush();
     }
 
     public function preRemove(Book $book, PreRemoveEventArgs $event)
     {
-        $eventManager = $event->getObjectManager();
+        if ('cli' != php_sapi_name()) {
+            $eventManager = $event->getObjectManager();
 
-        foreach ($book->getAuthors() as $author) {
-            $author->setCountBooks($author->getCountBooks() - 1);
+            foreach ($book->getAuthors() as $author) {
+                $author->setCountBooks($author->getCountBooks() - 1);
+            }
+
+            $eventManager->flush();
         }
-
-        $eventManager->flush();
     }
 
     public function postUpdate(Book $book, PostUpdateEventArgs $event)
     {
-        $eventManager = $event->getObjectManager();
+        if ('cli' != php_sapi_name()) {
+            $eventManager = $event->getObjectManager();
 
-        $authorIds = $eventManager->getRepository(Book::class)->getAuthorIdsByBookId($book->getId());
-        $buf = $authorIds;
+            $authorIds = $eventManager->getRepository(Book::class)->getAuthorIdsByBookId($book->getId());
+            $buf = $authorIds;
 
-        foreach ($book->getAuthors() as $key => $author) {
-            if (!in_array($author->getId(), $authorIds)) {
-                $author->setCountBooks($author->getCountBooks() + 1);
-            } else {
-                unset($buf[$key]);
+            foreach ($book->getAuthors() as $key => $author) {
+                if (!in_array($author->getId(), $authorIds)) {
+                    $author->setCountBooks($author->getCountBooks() + 1);
+                } else {
+                    unset($buf[$key]);
+                }
             }
-        }
 
-        if (!empty($buf)) {
-            $authorRepository = $eventManager->getRepository(Author::class);
+            if (!empty($buf)) {
+                $authorRepository = $eventManager->getRepository(Author::class);
 
-            foreach ($buf as $bufItem) {
-                $author = $authorRepository->find($bufItem);
-                $author->setCountBooks($author->getCountBooks() - 1);
+                foreach ($buf as $bufItem) {
+                    $author = $authorRepository->find($bufItem);
+                    $author->setCountBooks($author->getCountBooks() - 1);
+                }
             }
-        }
 
-        $eventManager->flush();
+            $eventManager->flush();
+        }
     }
 }
